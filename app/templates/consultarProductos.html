@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="POST" action="/buscarProducto">    
+  <div class="field">
+      <div class="control">
+          <input class="input is-large" type="text" name="searchtipo" placeholder="Tipo de Producto" autofocus="">
+          <a href=""><button class="button is-normal is-warning">Buscar</button></a>
+         </div>
+       </div>
+     </form>
+ 
+<div class="box" style="background-color: rgb(57, 30, 9);">
+  <h1 class="title">Productos Agregados</h1>
+  <div >
+    <table class="table" style="background-image:url(../static/img/navbar1.jpg)">
+      <thead class="thead-warning">
+        <tr>
+          <th scope="col" style="color: white;">Tipo de Producto</th>          
+          <th scope="col" style="color: white;">Nombre</th>
+          <th scope="col" style="color: white;">Color</th>
+          <th scope="col" style="color: white;">Materiales</th>
+          <th scope="col" style="color: white;">Precio</th>
+          <th scope="col" style="color: white;">Cantidad</th>
+          <th scope="col" style="color: white;">Imagen</th>          
+          <th scope="col" style="color: white;">Editar</th>
+          <th scope="col" style="color: white;">Eliminar</th>
+        </tr>
+      </thead>
+      
+        {% for producto in todosProductos %}
+          <tr>
+            <td class="table-info" style="background-image:url(../static/img/fondo.jpg)">{{ producto.tipo }}</td>
+            <td class="table-info" style="background-image:url(../static/img/fondo.jpg)">{{ producto.name }}</td>
+            <td class="table-info" style="background-image:url(../static/img/fondo.jpg)">{{ producto.color }}</td>
+            <td class="table-info" style="background-image:url(../static/img/fondo.jpg)">{{ producto.materiales }}</td>
+            <td class="table-info" style="background-image:url(../static/img/fondo.jpg)">${{ producto.precio }} Mxn</td>
+            <td class="table-info" style="background-image:url(../static/img/fondo.jpg)">{{ producto.cantidad }}</td>
+            <td class="table-info" style="background-image:url(../static/img/fondo.jpg)"><img src=" ../static/img/{{producto.imagen }}" width="100px" height="100px"></td>
+            
+            <td class="table-info" style="background-image:url(../static/img/fondo.jpg)"><a href="/modificarProducto/{{producto.id}}"><button class="button is-normal is-warning">Modificar</button></a></td>
+            <td class="table-info" style="background-image:url(../static/img/fondo.jpg)"><a href="/eliminarProducto/{{producto.id}}"><button class="button is-normal is-danger">Eliminar</button></a></td>
+          </tr>
+        {% endfor %}        
+    </table>
+    <a href="{{ url_for('productos.registerProductos') }}"><button class="button is-normal is-warning">Agregar Nuevo Producto</button></a>
+  </div>
+</div>
+{% endblock %}

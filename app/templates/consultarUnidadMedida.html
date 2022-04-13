@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <h1 class="title">Unidades de Medida</h1>
+  <div class="field">
+  <form method="POST" action="/buscarUnidadMedida">
+  <div class="field">
+    <div class="control">
+      <input class="input is-large" type="text" name="searchnombre" placeholder="Nombre de la unidad de Medida" autofocus="">
+      <a href=""><button class="button is-normal is-warning">Buscar</button></a>
+    </div>
+  </div>
+  </form>
+  <div>
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>          
+          <th scope="col">Nombre</th>                 
+          <th scope="col" >Unidad de Medida</th>
+          <th scope="col" ></th>
+          <th scope="col" ></th>
+        </tr>
+      </thead>
+
+
+        {% for UnidadMedidas in todosUnidadMedida %}
+          <tr>
+            
+            <td class="table-info">{{ UnidadMedidas.nombre }}</td>
+            <td class="table-info">{{ UnidadMedidas.unidad }}</td>
+
+            <td class="table-info"><a href="/modificarUnidadMedida/{{UnidadMedidas.id}}"><button class="button is-normal is-warning">Modificar</button></a></td>
+            <td class="table-info"><a href="/eliminarUnidadMedida/{{UnidadMedidas.id}}"><button class="button is-normal is-danger">Eliminar</button></a></td>
+          </tr>
+        {% endfor %}  
+          
+    </table>
+  </div>
+{% endblock %}

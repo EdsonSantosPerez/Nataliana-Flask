@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nataliana</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+  <link rel="icon" href="../static/img/logo.png">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+  <section class="hero is-primary is-fullheight" style="background-image:url(../static/img/fondo.jpg)">
+    <div class="hero-head">
+      <nav class="navbar is-black" style="background-image:url(../static/img/navbar1.jpg)">
+        <div class="container">
+          <a href="{{ url_for('main.index') }}" class="navbar-brand">
+            <img src="../static/img/logo.png" width="150" height="150" alt="Nataliana">
+          </a>
+          <div id="navbarMenuHeroA" class="navbar-menu">
+            <div class="navbar-end">
+              <a href="{{ url_for('main.index') }}" class="navbar-item">
+                Inicio
+              </a>
+              <a href="{{ url_for('productos.productosClient') }}" class="navbar-item">
+                Catalogo productos
+              </a>
+              {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('auth.register') }}" class="navbar-item" style="color: white;">
+                  Crea tu cuenta
+                </a>
+                <a href="{{ url_for('auth.login') }}" class="navbar-item" style="color: white;">
+                  Ingresa
+                </a>
+              {% endif %}
+              {% if current_user.is_authenticated %}
+                <nav class="navbar" role="navigation" aria-label="dropdown navigation">
+                  <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                      Cuenta
+                    </a>
+                    <div class="navbar-dropdown">
+                      <a href="{{ url_for('main.profile') }}" class="navbar-item" style="color: black;">
+                        Mi Perfil
+                      </a>
+                      <a href="{{ url_for('auth.logout') }}" class="navbar-item" style="color: black;">
+                        Cerrar Sesión
+                      </a>
+                    </div>
+                  </div>
+                </nav>
+              {% endif %}
+              {% if current_user.is_authenticated and current_user.has_role('admin')%}
+                <nav class="navbar" role="navigation" aria-label="dropdown navigation">
+                  <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                      Funciones Administrador
+                    </a>
+                    <div class="navbar-dropdown">
+                      <a href="{{ url_for('almacenistas.listar') }}" class="navbar-item" style="color: black;">
+                        Administrar Usuarios
+                      </a>
+                      <a href="{{ url_for('unidadMedida.registerunidadDeMedida') }}" class="navbar-item"
+                        style="color: black;">
+                        Administrar Unidades de Medida
+                      </a>
+                      <a href="{{ url_for('proveedores.registerProveedores') }}" class="navbar-item"
+                        style="color: black;">
+                        Administrar Proveedores
+                      </a>
+                      <a href="{{ url_for('materias_primas.listar') }}" class="navbar-item" style="color: black;">
+                        Administrar Materias Primas
+                      </a>
+                      <a href="{{ url_for('productos.registerProductos') }}" class="navbar-item" style="color: black;">
+                        Administrar Productos
+                      </a>
+                      <a href="{{ url_for('compras.crearForm') }}" class="navbar-item" style="color: black;">
+                        Administrar Compras de Proveedores
+                      </a>
+                      
+                    </div>
+                  </div>
+                </nav>
+              {% endif %}
+              {% if current_user.is_authenticated and current_user.has_role('almacenista')%}
+                <nav class="navbar" role="navigation" aria-label="dropdown navigation">
+                  <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                      Funciones Almacenista
+                    </a>
+                    <div class="navbar-dropdown">
+                      <a href="{{ url_for('unidadMedida.registerunidadDeMedida') }}" class="navbar-item"
+                        style="color: black;">
+                        Administrar Unidades de Medida
+                      </a>
+                      <a href="{{ url_for('proveedores.registerProveedores') }}" class="navbar-item"
+                        style="color: black;">
+                        Administrar Proveedores
+                      </a>
+                      <a href="{{ url_for('materias_primas.listar') }}" class="navbar-item" style="color: black;">
+                        Administrar Materias Primas
+                      </a>
+                      <a href="{{ url_for('productos.registerProductos') }}" class="navbar-item" style="color: black;">
+                        Administrar Productos
+                      </a>
+                      <a href="{{ url_for('compras.crearForm') }}" class="navbar-item" style="color: black;">
+                        Administrar Compras de Proveedores
+                      </a>
+                    </div>
+                  </div>
+                </nav>
+              {% endif %}
+              {% if current_user.is_authenticated and current_user.has_role('cliente')%}
+                <nav class="navbar" role="navigation" aria-label="dropdown navigation">
+                  <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                      Funciones Cliente
+                    </a>
+                    <div class="navbar-dropdown">
+                      <a href="{{ url_for('productos.productosClient') }}" class="navbar-item" style="color: black;">
+                        Catalogo productos
+                      </a>
+                    </div>
+                  </div>
+                </nav>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        {% block content %}
+
+        {% endblock %}
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
+</body>
+
+<footer class="footer" style="background-image:url(../static/img/navbar1.jpg) ">
+  <div class="content has-text-centered">
+    <p style="color: white;">
+      2022 Nataliana | Todos Los Derechos Reservados ©
+    </p>
+    <h4 style="color: white;">Siguenos</h4>
+    <div>
+      <a href="https://www.facebook.com/">
+        <img src="../static/img/facebook.png" width="50" height="50" alt="Facebook">
+      </a>
+      <a href="https://www.instagram.com/">
+        <img src="../static/img/insta.png" width="50" height="50" alt="Instagram">
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function editarAlmacenista(id, nombre, email, apellidoPaterno, apellidoMaterno, fechaNacimiento, telefono, calle, numExterior, numInterior, colonia, cp, estatus) {
+    // document.getElementById("idAlmacenista").value = id;
+    document.getElementById("nombre").value = nombre;
+    document.getElementById("email").value = email;
+    document.getElementById("apellidoPaterno").value = apellidoPaterno;
+    document.getElementById("apellidoMaterno").value = apellidoMaterno;
+    document.getElementById("fechaNacimiento").value = fechaNacimiento;
+    document.getElementById("telefono").value = telefono;
+    document.getElementById("calle").value = calle;
+    document.getElementById("numExterior").value = numExterior;
+    document.getElementById("numInterior").value = numInterior;
+    document.getElementById("colonia").value = colonia;
+    document.getElementById("cp").value = cp;
+    document.getElementById("almacenistaForm").action = "/editarUsuario/" + id;
+  }
+  function eliminarAlmacenista(id) {
+    window.location.href = "http://127.0.0.1:5000/eliminarUsuario/" + id;
+  }
+  function editarMateria(id, nombreMateria, cantidadMateria, unidadMedida) {
+    // document.getElementById("idAlmacenista").value = id;
+    document.getElementById("nombreMateria").value = nombreMateria;
+    document.getElementById("cantidadMateria").value = parseInt(cantidadMateria, 10);
+    document.getElementById("unidadMedida").value = unidadMedida;
+    document.getElementById("materiaForm").action = "/editarMateria/" + id;
+  }
+  function eliminarMateriaPrima(id) {
+    window.location.href = "http://127.0.0.1:5000/eliminarMateria/" + id;
+  }
+</script>
+
+</html>

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+{%from "_macros.html" import render_field%}
+
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Administracion de Unidad De Medida</h3>
+    <div class="box">
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+          <div class="notification is-danger">
+              {{ messages[0] }}
+          </div>
+      {% endif %}
+      {% endwith %}
+        <form method="POST" action="/registerUnidadMedida">
+          {{render_field(unidadMedida_Form.nombre)}}
+          {{render_field(unidadMedida_Form.unidad)}}
+
+          <button class="button is-block is-info is-large is-fullwidth">Registrar</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

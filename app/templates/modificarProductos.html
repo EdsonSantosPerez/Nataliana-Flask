@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="is-offset-4 box" style="background-color: rgb(57, 30, 9);">
+    <h3 class="title">Actualizacion de productos</h3>
+    <div class="box" style="background-image:url(../static/img/fondo.jpg)">
+
+        <form method="POST" action="/modificarProductos/{{ producto.id }}" methos="POST">
+            <div class="field">
+                <div class="control">
+                    <input name="tipo" type="text" id="tipo" list="tipos" value="{{ producto.tipo }}">
+                    <datalist id="tipos">
+                        <option>Bolso</option>
+                        <option>Cartera</option> 
+                        <option>Cinto</option> 
+                       </datalist>
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="nameVG" placeholder="Nombre del Modelo" value="{{ producto.name }}">
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="color" placeholder="Color" value="{{ producto.color }}">
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="number" name="precio" placeholder="Precio" value="{{ producto.precio }}">
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="number" name="cantidad" placeholder="Cantidad" value="{{ producto.cantidad }}">
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="file" name="imagen" placeholder="URL de imagen" value="{{ producto.imagen}}">
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-large" type="text" name="materiales" placeholder="Materiales" value="{{ producto.materiales }}">
+                </div>
+            </div>
+
+            <button class="button is-block is-info is-large is-fullwidth" style="background-color: rgb(57, 30, 9);">Actualizar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

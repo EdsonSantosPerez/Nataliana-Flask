@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+{%from "_macros.html" import render_field%}
+<div class="column is-4 is-offset-4">
+    <h3 class="title">Modificacion de unidad de medida</h3>
+    <div class="box">
+
+        <form method="POST" action="/modificarUnidadMedida/{{ UnidadMedidas.id }}">
+
+            {{render_field(unidadMedida_Form.nombre)}}
+            {{render_field(unidadMedida_Form.unidad)}}
+
+            <button class="button is-block is-info is-large is-fullwidth">Modificar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

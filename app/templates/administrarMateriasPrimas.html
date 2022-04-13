@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% from '_macros.html' import render_field %}
+{% block content %}
+    <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#registrarModal"  style="background-color: rgb(57, 30, 9);">
+            Agregar materia prima
+        </button>
+    </div>
+  <h1 class="title text-dark">Administrar Materias Primas</h1>
+  <div>
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>          
+          <th scope="col">Nombre</th>
+          <th scope="col">Cantidad</th>
+          <th scope="col">Medida</th>
+          <th scope="col">Acciones</th>          
+        </tr>
+      </thead>
+      
+        {% for materias_primas, unidadDeMedida in todosMaterias %}
+            <tr>
+                <td class="table-info">{{ materias_primas.nombre }}</td>
+                <td class="table-info">{{ materias_primas.cantidad }}</td>
+                <td class="table-info">{{ materias_primas.unidadDeMedida.nombre }}</td>
+                <td class="table-info">
+                    <div>
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#registrarModal" class="btn btn-warning" onclick="editarMateria('{{materias_primas.id}}', '{{materias_primas.nombre}}','{{materias_primas.cantidad}}', '{{materias_primas.unidadDeMedida.id}}')">Editar</button>
+                        <button type="button" class="btn btn-danger" onclick="eliminarMateriaPrima('{{materias_primas.id}}')">Eliminar</button>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}        
+    </table>
+  </div>
+  <!-- Modal -->
+<div class="modal fade" id="registrarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title text-dark" id="exampleModalLabel">Registrar nueva materia prima</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <form id="materiaForm" method="POST" action="/agregarMateria">
+        <input type="text" id="idMateria" name="idMateria" style="display: none;">
+        <div class="modal-body">
+                <div class="field">
+                    <div class="control text-dark">
+                        {{render_field(form.nombre, class="input is-large")}}
+                    </div>
+                </div>
+    
+                <div class="field">
+                    <div class="contro text-dark">
+                        {{render_field(form.cantidad, class="input is-large")}}
+                    </div>
+                </div>
+    
+                <div class="field">
+                    <div class="control text-dark">
+                        {{render_field(form.u_medida, class="input is-large")}}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-dark"  style="background-color: rgb(57, 30, 9);">Registrar</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

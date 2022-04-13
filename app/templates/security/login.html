@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="column is-4 is-offset-4 box" style="background-color: rgb(57, 30, 9);">
+    <FONT FACE="times new roman" class="title">Hola, Bienvenido!</FONT>
+    <div class="box" style="background-image:url(../static/img/fondo.jpg)">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+        {% endwith %}
+        <form method="POST" action="/security/login">
+            <div class="field">
+                <div class="control">
+                    <FONT FACE="times new roman">CORREO ELECTRONICO:</FONT>
+                    <input class="input is-large" type="email" name="email" placeholder="Email" autofocus="">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <FONT FACE="times new roman">CONTRASEÑA:</FONT>
+                    <input class="input is-large" type="password" name="password" placeholder="Password">
+                </div>
+            </div>
+            <div class="field">
+                <label class="checkbox">
+                    <input type="checkbox">
+                    Recuerdame
+                </label>
+            </div>
+            <button class="button is-block is-info is-large is-fullwidth" style="background-color: rgb(57, 30, 9);">Iniciar Sesión</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <h1 class="title">Proveedores</h1>
+  <div class="field">
+    <form method="POST" action="buscarProveedor">
+      <div class="field">
+        <div class="control">
+          <input class="input is-large" type="text" name="searchrfc" placeholder="RFC del Proveedor" autofocus="">
+          <a href=""><button class="button is-normal is-warning">Buscar</button></a>
+        </div>
+      </div>
+    </form>
+  <div>
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>          
+          <th scope="col">RFC</th>
+          <th scope="col">Calle</th>
+          <th scope="col">Colonia</th> 
+          <th scope="col">Numero Interior</th>
+          <th scope="col">Numero Exterior</th>  
+          <th scope="col">Razon Social</th>
+          <th scope="col">Telefono</th>  
+          <th scope="col">Fecha de Registro</th>                   
+          <th scope="col" ></th>
+          <th scope="col" ></th>
+        </tr>
+      </thead>
+
+
+        {% for proveedor in todosProveedores %}
+          <tr>
+            
+            <td class="table-info">{{ proveedor.rfc }}</td>
+            <td class="table-info">{{ proveedor.calle }}</td>
+            <td class="table-info">{{ proveedor.colonia }}</td>
+            <td class="table-info">{{ proveedor.numInter }}</td>
+            <td class="table-info">{{ proveedor.numExter }}</td>
+            <td class="table-info">{{ proveedor.razonSocial }}</td>
+            <td class="table-info">{{ proveedor.telefono }}</td>
+            <td class="table-info">{{ proveedor.fechaRegistro }}</td>
+
+            <td class="table-info"><a href="/modificarProveedor/{{proveedor.id}}"><button class="button is-normal is-warning">Modificar</button></a></td>
+            <td class="table-info"><a href="/eliminarProveedor/{{proveedor.id}}"><button class="button is-normal is-danger">Eliminar</button></a></td>
+          </tr>
+        {% endfor %}  
+          
+    </table>
+  </div>
+{% endblock %}

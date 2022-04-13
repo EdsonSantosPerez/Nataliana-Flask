@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class=" is-offset-4 box" style="background-color: rgb(57, 30, 9);">
+    <FONT FACE="times new roman" class="title">COMPLETA TUS DATOS</FONT>
+    <div class="box" style="background-image:url(../static/img/fondo.jpg)">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}. Ir a <a href="{{ url_for('auth.login') }}">login</a>.
+            </div>
+        {% endif %}
+        {% endwith %}
+        <form method="POST" action="/security/register">
+            <div class="field">
+                <div class="control">
+                    <FONT FACE="times new roman">CORREO ELECTRONICO(*):</FONT>
+                    <input class="input is-large" type="email" name="email" placeholder="Email" autofocus="">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <FONT FACE="times new roman">CONTRASEÑA(*):</FONT>
+                    <input class="input is-large" type="password" name="password" placeholder="Contraseña">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <FONT FACE="times new roman">NOMBRE COMPLETO(*):</FONT>
+                    <input class="input is-large" type="text" name="nombre" placeholder="Nombre(s)" autofocus="">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <FONT FACE="times new roman">APELLIDO PATERNO(*):</FONT>
+                    <input class="input is-large" type="text" name="apellidoPaterno" placeholder="Apellido paterno">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <FONT FACE="times new roman">APELLIDO MATERNO(*):</FONT>
+                    <input class="input is-large" type="text" name="apellidoMaterno" placeholder="Apellido materno">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <FONT FACE="times new roman">FECHA DE NACIMIENTO(*):</FONT>
+                    <input class="input is-large" type="date" name="fechaNacimiento" placeholder="Fecha de nacimiento">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <FONT FACE="times new roman">NUMERO TELEFONICO(*):</FONT>
+                    <input class="input is-large" type="text" name="telefono" placeholder="Telefono">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <FONT FACE="times new roman">COLONIA(*):</FONT>
+                    <input class="input is-large" type="text" name="colonia" placeholder="Colonia">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <FONT FACE="times new roman">CALLE(*):</FONT>
+                    <input class="input is-large" type="text" name="calle" placeholder="Calle">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <FONT FACE="times new roman">NUMERO EXTERIOR(*):</FONT>
+                    <input class="input is-large" type="text" name="numExterior" placeholder="Número exterior">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <FONT FACE="times new roman">NUMERO INTERIOR:</FONT>
+                    <input class="input is-large" type="text" name="numInterior" placeholder="Número interior">
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <FONT FACE="times new roman">CODIGO POSTAL(*):</FONT>
+                    <input class="input is-large" type="number" name="cp" placeholder="Código postal">
+                </div>
+            </div>
+            <FONT FACE="times new roman">(*) CAMPO OBLIGATORIO</FONT>
+
+            <button class="button is-block is-info is-large is-fullwidth" style="background-color: rgb(57, 30, 9);">Registrarme</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

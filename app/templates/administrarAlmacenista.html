@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <div class="notification is-danger">
+        {{ messages[0] }}
+    </div>
+    <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#registrarModal"  style="background-color: rgb(57, 30, 9);">
+            Agregar usuario
+        </button>
+    </div>
+    {% endif %}
+    {% endwith %}
+  <h1 class="title text-dark">Administrar Usuarios</h1>
+  <div>
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>          
+          <th scope="col">Email</th>
+          <th scope="col">Nombre completo</th>
+          <th scope="col">Dirección</th>
+          <th scope="col">Acciones</th>          
+        </tr>
+      </thead>
+      
+        {% for usuario in todosUsuarios %}
+            <tr>
+                <td class="table-info">{{ usuario.email }}</td>
+                <td class="table-info">{{ '{} {} {}'.format(usuario.nombre, usuario.apellidoPaterno, usuario.apellidoMaterno) }}</td>
+                <td class="table-info">{{ '{} #{}, {}, {}'.format(usuario.calle, usuario.numExterior, usuario.colonia, usuario.cp) }}</td>
+                <td class="table-info">
+                    <div>
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#registrarModal" class="btn btn-warning" onclick="editarAlmacenista('{{usuario.id}}', '{{usuario.nombre}}', '{{usuario.email}}', '{{usuario.apellidoPaterno}}', '{{usuario.apellidoMaterno}}', '{{usuario.fechaNacimiento}}', '{{usuario.telefono}}', '{{usuario.calle}}', '{{usuario.numExterior}}', '{{usuario.numInterior}}', '{{usuario.colonia}}', '{{usuario.cp}}', '{{usuario.estatus}}')">Editar</button>
+                        <button type="button" class="btn btn-danger" onclick="eliminarAlmacenista('{{usuario.id}}')">Eliminar</button>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}        
+    </table>
+  </div>
+  <!-- Modal -->
+<div class="modal fade" id="registrarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title text-dark" id="exampleModalLabel">Registrar nuevo almacenista</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <form id="almacenistaForm" method="POST" action="/agregarUsuario">
+        <input type="text" id="idAlmacenista" name="idAlmacenista" style="display: none;">
+        <div class="modal-body">
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="email" id="email" name="email" placeholder="Email" autofocus="">
+                    </div>
+                </div>
+    
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="password" id="password" name="password" placeholder="Contraseña">
+                    </div>
+                </div>
+    
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="text" id="nombre" name="nombre" placeholder="Nombre(s)" autofocus="">
+                    </div>
+                </div>
+    
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="text" id="apellidoPaterno" name="apellidoPaterno" placeholder="Apellido paterno">
+                    </div>
+                </div>
+    
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="text" id="apellidoMaterno" name="apellidoMaterno" placeholder="Apellido materno">
+                    </div>
+                </div>
+    
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="date" id="fechaNacimiento" name="fechaNacimiento" placeholder="Fecha de nacimiento">
+                    </div>
+                </div>
+    
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="text" id="telefono" name="telefono" placeholder="Telefono">
+                    </div>
+                </div>
+    
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="text" id="colonia" name="colonia" placeholder="Colonia">
+                    </div>
+                </div>
+    
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="text" id="calle" name="calle" placeholder="Calle">
+                    </div>
+                </div>
+    
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="text" id="numExterior" name="numExterior" placeholder="Número exterior">
+                    </div>
+                </div>
+    
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="text" id="numInterior" name="numInterior" placeholder="Número interior">
+                    </div>
+                </div>
+    
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="number" id="cp" name="cp" placeholder="Código postal">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-dark"  style="background-color: rgb(57, 30, 9);">Registrar</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

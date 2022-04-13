@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="box" style="background-color: rgb(57, 30, 9); color:white">Nuestro Catalogo</h1>
+
+<div class="d-flex flex-wrap">
+    
+    {% for producto in todosProductos %}
+        <div class="row">
+          <div class="col me-4">
+            <div class="card needspace" style="width: 15rem;">
+                <img src="../static/img/{{producto.imagen}}" class="card-img-top" alt="Producto" style="height: 200px">
+                <a class="card-body" style="background-color: rgb(57, 30, 9); ">
+                    <h5 class="card-title" style="color: #ffffff;"> {{producto.tipo }}</h5>
+                    <h5 class="card-text" style="color: #ffffff;">Modelo: {{producto.name }}</h5>
+                    <h5 class="card-text" style="color: #ffffff;">Color: {{producto.color }}</h5>
+                    <h5 class="card-text" style="color: #ffffff;">Materiales: {{producto.materiales }}</h5>
+                    <h5 class="card-text" style="color: #ffffff;">Precio: {{producto.precio }} Mxn</h5>
+                    <h5 class="card-text" style="color: #ffffff;">Disponibles: {{producto.cantidad }} Unidades en Stock</h5>
+                    <a href="{{ url_for('productos.ventaRapida') }}"><button  id="buttonComprar" class="btn btn-dark" type="submit"><span style="color: rgb(255, 255, 255);">Comprar Ahora</span></button></a>
+                    <a  method="POST" action="/carritoProductos/{{ producto.id }}" methos="POST"><button id="buttonCarrito" class="btn btn-dark" type="submit"><span style="color: rgb(255, 255, 255);">Añadir al Carrito</span></button></a>
+                </div>
+            </div>
+          </div>
+        
+        {% endfor %}
+            
+</div>
+{% endblock %}
