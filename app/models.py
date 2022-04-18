@@ -81,13 +81,19 @@ class MateriasPrimas(db.Model):
     proveedor = db.relationship('Proveedores', 
         backref= 'materiasPrimas', lazy=True) """
 
-producto_materiaPrima = db.Table('producto_materiaPrima',
-    db.Column('id', db.Integer, primary_key=True),
-    db.Column('cantidad', db.Float, nullable=False),
-    db.Column('idMateriaPr', db.Integer, db.ForeignKey('materias_primas.id')),
-    db.Column('idProducto', db.Integer, db.ForeignKey('productos.id')))
+class Producto_MateriaPrima(db.Model):
+    _tablename_ = 'producto_materiaPrima'
 
-""" INTEGRACION FABRICIO """
+    id = db.Column(db.Integer, primary_key=True)
+    cantidad = db.Column(db.Float, nullable=False)
+    idMateriaPr = db.Column(db.Integer, db.ForeignKey('materias_primas.id'))
+    idProducto = db.Column(db.Integer, db.ForeignKey('productos.id'))
+    producto = db.relationship('Productos',
+        backref= db.backref('producto_materiaprimas', lazy=True))
+    materias = db.relationship('MateriasPrimas',
+        backref= db.backref('producto_materiaprimas', lazy=True))
+
+
 class Productos(db.Model):
     """Productos model"""
     
@@ -101,9 +107,8 @@ class Productos(db.Model):
     imagen = db.Column(db.String(255), nullable=False)
     status = db.Column(db.Boolean)
     materiales = db.Column(db.String(50), nullable=False)
-    materiaPrima = db.relationship('MateriasPrimas',
-        secondary=producto_materiaPrima,
-        backref= db.backref('productos', lazy='dynamic'))
+    materiaPrima = db.relationship('Producto_MateriaPrima',
+        backref= db.backref('productoMatPri', lazy=True))
 
 productos_pedidos = db.Table('productos_pedidos',
     db.Column('id', db.Integer, primary_key=True),

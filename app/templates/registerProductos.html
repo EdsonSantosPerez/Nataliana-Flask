@@ -1,54 +1,147 @@
 {% extends "base.html" %}
 
+{% from '_macros.html' import renderLabelField %}
 {% block content %}
-<div class=" is-offset-4 box" style="background-color: rgb(57, 30, 9);">
-    <h3 class="title">Agregar Nuevo Producto</h3>
-    <div class="box" style="background-image:url(../static/img/fondo.jpg)">
+<div class="container text-dark card">
+    <h2>Administrar Compras</h2>
+    <div class="row m-5">
+        <div class="col">
+            <form>
+                <div class="row">
+                    <div class="col">
+                        {{ renderLabelField(form.tipo, class="form-select") }}
+                    </div>
+                    <div class="col">
+                        {{ renderLabelField(form.color, class="form-select") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        {{ renderLabelField(form.nombre, class="form-control") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        {{ renderLabelField(form.cantidad, class="form-control") }}
+                    </div>
+                    <div class="col">
+                        {{ renderLabelField(form.precio, class="form-control") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        {{ renderLabelField(form.imagen, class="form-control") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-11">
+                        {{ renderLabelField(form.materiaPri, class="form-select") }}
+                    </div>
+                    <div class="col-1 mt-4">
+                        <button type="button" class="btn btn-success btn-sm" id="addMateriaPri"
+                            onclick="addMateriaPrima()"><strong> + </strong></button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        {{ renderLabelField(form.cantidadMPri, class="form-control") }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button type="button" class="btn btn-success" onclick="registrarProducto()">Realizar
+                            compra</button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-danger">Cancelar compra</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col m-0 p-0 rounded shadow" style="max-height: 250px; overflow: auto;">
+            <table class="table rounded m-0">
+                <thead class="table-dark">
+                    <th colspan="2" class="text-white rounded-top" style="position: sticky; top: 0; z-index: 1;">
+                        Materiales</th>
+                </thead>
+                <tbody id="materiasPriTBody">
 
-        <form method="POST" action="/registerProductos">
-            <div class="field">
-                <div class="control">
-                    <input name="tipo" type="text" id="tipo" list="tipos">
-                    <datalist id="tipos">
-                        <option>Bolso</option>
-                        <option>Cartera</option> 
-                        <option>Cinto</option> 
-                       </datalist>
-                </div>
-            </div>
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="text" name="nameVG" placeholder="Nombre del Modelo" autofocus="">
-                </div>
-            </div>
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="text" name="color" placeholder="Color" autofocus="">
-                </div>
-            </div>
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="number" name="precio" placeholder="Precio" autofocus="">
-                </div>
-            </div>
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="number" name="cantidad" placeholder="Cantidad" autofocus="">
-                </div>
-            </div>
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="file" name="imagen" placeholder="URL de imagen">
-                </div>
-            </div>
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="text" name="materiales" placeholder="Materiales" autofocus="">
-                </div>
-            </div>
-
-            <button class="button is-block is-info is-large is-fullwidth" style="background-color: rgb(57, 30, 9);">Registrar</button>
-        </form>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
+<script>
+    var idMateriaPriArray = [];
+
+    var removeMateriaPrima = (button, idMateriaPri) => {
+        let row = button.parentElement.parentElement;
+        row.remove();
+        idMateriaPriArray.some(e => {
+            if (parseInt(e.idMateriaPri) === parseInt(idMateriaPri)) {
+                idMateriaPriArray.splice(idMateriaPriArray.indexOf(e), 1);
+            }
+        });
+    }
+
+    var addMateriaPrima = () => {
+        //let merma
+        let cantidad = $('#cantidadMateriaCompra').val();
+        let idMateriaPri = $('#materiaPriCompra').val();
+        let precioMateriaPri = $('#precioUMateria').val();
+        let txtMateriaPri = $('#materiaPriCompra option:selected').text();
+        let txtInfoMateriaPri = txtMateriaPri.split('-');
+        let materiaPrimaObj = {
+            'idMateriaPri': idMateriaPri,
+            'cantidad': parseInt(cantidad),
+            'precioU': parseFloat(precioMateriaPri)
+        }
+        if (cantidad <= 0 || !cantidad) {
+            alert('Elije una cantidad de material válida!');
+            return;
+        }
+        if (precioMateriaPri <= 0 || !precioMateriaPri) {
+            alert('Elije una cantidad de material válida!');
+            return;
+        }
+        if (idMateriaPriArray.some(e => e.idMateriaPri === materiaPrimaObj.idMateriaPri)) {
+            alert('No puedes elegir más de dos veces el mismo material!');
+            return;
+        }
+        idMateriaPriArray.push(materiaPrimaObj);
+        $('#materiasPriTBody').append(
+            `<tr>
+                    <td>${txtInfoMateriaPri[0].trim()} - ${cantidad} ${txtInfoMateriaPri[1].trim()} - precio ${precioMateriaPri} c/u</td>
+                    <td>
+                        <button class='btn btn-danger rounded-circle btn-close btn-sm p-1'  id='removeMateriaPri' onclick='removeMateriaPrima(this, ${materiaPrimaObj.idMateriaPri})'></button>
+                    </td>
+                </tr>`
+        );
+    }
+
+    var registrarProducto = async () => {
+        console.log(idMateriaPriArray);
+        if (idMateriaPriArray.length === 0) {
+            alert('Tienes que agregar al menos 1 material a la compra!');
+            return;
+        }
+        let idProveedor = $('#proveedorCompra').val();
+        console.log(idProveedor);
+        const response = await fetch('http://127.0.0.1:5000/crear', {
+            method: 'POST',
+            body: JSON.stringify({
+                idProveedor: idProveedor,
+                materias: idMateriaPriArray
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        }).then(response => {
+            console.log("response ", response);
+        }).catch(error => {
+            console.log("error ", error);
+        });
+    }
+</script>
 {% endblock %}

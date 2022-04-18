@@ -10,9 +10,10 @@ from flask_security import login_required
 from flask_security.utils import login_user, logout_user, hash_password, encrypt_password
 ##########################################################################################
 #Importamos el modelo del usuario
-from . models import Productos
+from . models import Productos, MateriasPrimas, UnidadDeMedida, Producto_MateriaPrima, MateriaPrimaPorProducto
 #Importamos el objeto de la BD y userDataStore desde __init__
 from . import db
+from .forms import RegisterProducto
 
 
 
@@ -23,41 +24,52 @@ productos = Blueprint('productos', __name__)
 @productos.route('/registerProductos')
 @login_required #Parar proteger la ruta, con inicio de sesion
 def registerProductos():
-    return render_template('/registerProductos.html')
+    materiasU = db.session.query(MateriasPrimas, UnidadDeMedida).join(UnidadDeMedida).filter(MateriasPrimas.status==1).all()
+    materiasU_list = [(materias_primas.id, '{} - {}'.format(materias_primas.nombre, materias_primas.unidadDeMedida.nombre)) for materias_primas, unidadDeMedida in materiasU]
+    registerProducto = RegisterProducto()
+    registerProducto.materiaPri.choices = materiasU_list
+    context = {"registerProducto_Form": registerProducto}
+    return render_template('/registerProductos.html', form = registerProducto, **context)
 
 @productos.route('/registerProductos', methods=['POST'])
 @login_required #Parar proteger la ruta, con inicio de sesion
 def registerProductos_post():
-    tipo = request.form.get('tipo')
-    nameVG = request.form.get('nameVG')
-    precio = request.form.get('precio')
-    cantidad = request.form.get('cantidad')
-    imagen = request.form.get('imagen')
-    color = request.form.get('color')
-    materiales = request.form.get('materiales')
-    status = True
-
-    #Consultamos si existe un usuario ya registrado con el email.
-    producto = Productos.query.filter_by(name=nameVG).first()
-
-    if producto: #Si se encontró un producto
-        flash('El producto ya existe, se modifico')
-        return redirect(url_for('productos.consultarProductos'))
-
-    #Si no existe, creamos un nuevo producto con sus datos.
-    new_product = Productos(tipo=tipo ,name=nameVG, color=color, precio=precio, cantidad=cantidad, imagen=imagen, materiales=materiales, status=status)    
+    data = request.get_json(force=True)
+    materias = data.get('materias', '')
+    producto = Productos()
+    producto.tipo = data.get('tipo', '')
+    producto.name = data.get('nombre', '')
+    producto.color = data.get('color', '')
+    producto.precio = data.get('precio', '')
+    producto.cantidad = float(data.get('cantidad', ''))
+    producto.imagen = data.get('imagen', '')
+    producto.status = 1
+    materiasIds = []
+    # Obtiene los ids de materias primas para buscar
+    for materia in materias:
+        materiasIds.append(int(materia.get('idMateriaPri', '')))
+    i= 0
+    for materia in materias:
+        mPrima_por_producto = MateriaPrimaPorProducto(cantidadMateria = float(data.get('cantidadMPri', '')), cantidadMerma = (float(data.get('cantidadMPri', '')) * 0.1))
+        producto_materiaPrima = Producto_MateriaPrima( cantidad= float(data.get('cantidadMPri', '')))
+        producto_materiaPrima.materias = MateriasPrimas.query.get(int(materia.get('idMateriaPri', '')))
+        mPrima_por_producto.materias = MateriasPrimas.query.get(int(materia.get('idMateriaPri', '')))
+        producto.materiaPrima.append(producto_materiaPrima)
+        db.session.commit()
+        i = i +1
     
-    db.session.add(new_product)
-    #Añadimos el nuevo producto a la base de datos.
     db.session.commit()
-
+    #lastProd_id = producto.id
+    mPrima_por_producto.producto.append(producto)
+    db.session.commit()
     return redirect(url_for('productos.consultarProductos'))
 
 @productos.route('/consultarProductos')
 @login_required #Parar proteger la ruta, con inicio de sesion
 def consultarProductos():
    #todosProductos = db.session.query(Productos).all()
-    todosProductos = Productos.query.filter_by(status=1).all()
+    todosProductos = Productos.query.filter(status=1).all()
+    productos = db.session.query(Productos, MateriasPrimas).join(MateriasPrimas).filter(Productos.status==1).all()
     return render_template('/consultarProductos.html', todosProductos= todosProductos)
 
 @productos.route('/ventaRapida')

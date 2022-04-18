@@ -1,8 +1,5 @@
 #Importamos los módulos a usar de flask
-from contextlib import nullcontext
-from multiprocessing import context
 from flask import Blueprint, render_template, redirect, url_for, request, flash
-from pyparsing import empty
 #Importamos los módulos de seguridad para las funciones hash
 from werkzeug.security import generate_password_hash, check_password_hash
 
