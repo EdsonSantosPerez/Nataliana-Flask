@@ -5,4 +5,4 @@ email-validator
 mysqlclient
 flask-marshmallow
 bcrypt
-WTForms
+wtforms

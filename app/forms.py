@@ -48,7 +48,11 @@ class RegisterCompraForm(FlaskForm):
     materiaPri=SelectField('Materia Prima', choices=[], validators=[DataRequired(message='El dato es obligatiorio')], id='materiaPriCompra', name='materiaPriCompra')
     precioU=FloatField('Precio Unitario', validators=[DataRequired(message='El dato es obligatiorio'), validators.number_range(min=0.5, message='El valor minimo es 1')], id='precioUMateria', name='precioUMateria')
 
-class RegisterProducto(FlaskForm):
+class RegisterPedidoForm(FlaskForm):
+    cantidad=IntegerField('Cantidad de producto', validators=[DataRequired(message='El dato es obligatiorio'), validators.number_range(min=1, message='El valor minimo es 1')], id='cantidadProducto', name='cantidadProducto')
+    productoPedido=SelectField('Productos', choices=[], validators=[DataRequired(message='El dato es obligatiorio')], id='productoPedido', name='productoPedido')
+
+class RegisterProductoForm(FlaskForm):
     tipo=SelectField('Tipo producto', choices=[('bolso', 'Bolso'), ('cartera', 'Cartera'), ('cinto', 'Cinto')], validators=[DataRequired(message='El dato es obligatiorio')], id='tipoProducto', name='tipoProducto')
     nombre = StringField("Nombre:", validators=[DataRequired(message='El dato es obligatiorio'), validators.length(max=50)], id='nombreProducto', name='nombreProducto')
     imagen = FileField("Imagen:", validators=[DataRequired(message='El dato es obligatiorio')])

@@ -23,7 +23,7 @@ def create_app():
     app.config['SECRET_KEY'] = os.urandom(24)
     #Definimos la ruta a la BD: mysql://user:password@localhost/bd'
     """ EDSON: En mi caso tuve agregarle el puerto a "localhost" (:3307) porque corresponde a mi conexion de MySQL Workbench """
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:admin@localhost:3306/natalianaDB'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost:3307/natalianaDB'
     # We're using PBKDF2 with salt.
     app.config['SECURITY_PASSWORD_HASH'] = 'pbkdf2_sha512'
     #Semilla para el método de encriptado que utiliza flask-security
@@ -69,5 +69,8 @@ def create_app():
 
     from .compras import compras as compras_blueprint
     app.register_blueprint(compras_blueprint)
+
+    from .pedidos import pedidos as pedidos_blueprint
+    app.register_blueprint(pedidos_blueprint)
 
     return app

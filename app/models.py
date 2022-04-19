@@ -86,6 +86,7 @@ class Producto_MateriaPrima(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     cantidad = db.Column(db.Float, nullable=False)
+    cantidadMerma = db.Column(db.Float, nullable=False)
     idMateriaPr = db.Column(db.Integer, db.ForeignKey('materias_primas.id'))
     idProducto = db.Column(db.Integer, db.ForeignKey('productos.id'))
     producto = db.relationship('Productos',
@@ -115,6 +116,17 @@ productos_pedidos = db.Table('productos_pedidos',
     db.Column('pedidoId', db.Integer, db.ForeignKey('pedidos.id')),
     db.Column('productoId', db.Integer, db.ForeignKey('productos.id')))
 
+""" class ProductosPedido(db.Model):
+
+    _tablename_ = 'productos_pedidos'
+    id = db.Column(db.Integer, primary_key=True)
+    pedidoId = db.Column(db.Integer, db.ForeignKey('pedidos.id'))
+    productoId = db.Column(db.Integer, db.ForeignKey('productos.id'))
+    producto = db.relationship('Productos',
+        backref= db.backref('pedido_producto', lazy=True))
+    pedido = db.relationship('Pedidos',
+        backref= db.backref('pedido_producto', lazy=True)) """
+
 class Pedidos(db.Model):
 
     """Pedidos Model"""
@@ -137,7 +149,7 @@ ventas_productos = db.Table('ventas_productos',
 
 class Ventas(db.Model):
 
-    """Pedidos Model"""
+    """Ventas Model"""
 
     _tablename_ = 'ventas'
     id = db.Column(db.Integer, primary_key=True)

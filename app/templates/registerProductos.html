@@ -9,6 +9,7 @@
             <form>
                 <div class="row">
                     <div class="col">
+                        <input type="text" name="idProducto" id="idProducto" hidden disabled>
                         {{ renderLabelField(form.tipo, class="form-select") }}
                     </div>
                     <div class="col">
@@ -73,75 +74,95 @@
 </div>
 
 <script>
-    var idMateriaPriArray = [];
+    var materiaPrimArray = [];
 
     var removeMateriaPrima = (button, idMateriaPri) => {
         let row = button.parentElement.parentElement;
         row.remove();
-        idMateriaPriArray.some(e => {
+        materiaPrimArray.some(e => {
             if (parseInt(e.idMateriaPri) === parseInt(idMateriaPri)) {
-                idMateriaPriArray.splice(idMateriaPriArray.indexOf(e), 1);
+                materiaPrimArray.splice(materiaPrimArray.indexOf(e), 1);
             }
         });
+        listarMaterias();
     }
 
     var addMateriaPrima = () => {
-        //let merma
-        let cantidad = $('#cantidadMateriaCompra').val();
-        let idMateriaPri = $('#materiaPriCompra').val();
-        let precioMateriaPri = $('#precioUMateria').val();
-        let txtMateriaPri = $('#materiaPriCompra option:selected').text();
+        let cantidadMPri = $('#cantidadMPri').val();
+        let idMateriaPri = $('#materiaPriProducto').val();
+        let txtMateriaPri = $('#materiaPriProducto option:selected').text();
         let txtInfoMateriaPri = txtMateriaPri.split('-');
+
         let materiaPrimaObj = {
             'idMateriaPri': idMateriaPri,
-            'cantidad': parseInt(cantidad),
-            'precioU': parseFloat(precioMateriaPri)
-        }
-        if (cantidad <= 0 || !cantidad) {
-            alert('Elije una cantidad de material válida!');
-            return;
+            'descripcion': `${ txtInfoMateriaPri[0].trim()} - ${ cantidadMPri } ${ txtInfoMateriaPri[1].trim() }`,
+            'cantidad': parseFloat(cantidadMPri)
         }
         if (precioMateriaPri <= 0 || !precioMateriaPri) {
             alert('Elije una cantidad de material válida!');
             return;
-        }
-        if (idMateriaPriArray.some(e => e.idMateriaPri === materiaPrimaObj.idMateriaPri)) {
+        } else if (materiaPrimArray.some(e => e.idMateriaPri === materiaPrimaObj.idMateriaPri)) {
             alert('No puedes elegir más de dos veces el mismo material!');
             return;
         }
-        idMateriaPriArray.push(materiaPrimaObj);
+        materiaPrimArray.push(materiaPrimaObj);
+        listarMaterias();
+    }
+
+    var listarMaterias = () => {
+        $('#materiasPriTBody').empty();
         $('#materiasPriTBody').append(
-            `<tr>
-                    <td>${txtInfoMateriaPri[0].trim()} - ${cantidad} ${txtInfoMateriaPri[1].trim()} - precio ${precioMateriaPri} c/u</td>
+            materiaPrimArray.forEach(materiaPri => {
+                `<tr>
+                    <td>${materiaPri.descripcion}</td>
                     <td>
-                        <button class='btn btn-danger rounded-circle btn-close btn-sm p-1'  id='removeMateriaPri' onclick='removeMateriaPrima(this, ${materiaPrimaObj.idMateriaPri})'></button>
+                        <button class='btn btn-danger rounded-circle btn-close btn-sm p-1'  id='removeMateriaPri' onclick='removeMateriaPrima(this, ${materiaPri.idMateriaPri})'></button>
                     </td>
-                </tr>`
-        );
+            </tr>`}
+            ));
     }
 
     var registrarProducto = async () => {
-        console.log(idMateriaPriArray);
-        if (idMateriaPriArray.length === 0) {
+        let idProducto = $('#idProducto').val();
+        let tipo = $('#materiaPriProducto option:selected').text();
+        let nombre = $('#materiaPriProducto option:selected').text();
+        let color = $('#materiaPriProducto option:selected').text();
+        let precio = $('#materiaPriProducto option:selected').text();
+        let cantidad = $('#cantidadStock').val();
+        let imagen = $('#materiaPriProducto option:selected').text();
+        let endpoint = (idProducto == 0) ? 'registrarProducto': 'modificarProducto';
+
+        console.log(materiaPrimArray);
+        if (materiaPrimArray.length === 0) {
             alert('Tienes que agregar al menos 1 material a la compra!');
             return;
+        } else if (tipo == "" || nombre == "" || color == "" || precio == "" || cantidad == "" || cantidad <= 0 || imagen == "") {
+            alert('Error en la información, verifica los datos del formulario!');
+            return;
         }
-        let idProveedor = $('#proveedorCompra').val();
-        console.log(idProveedor);
-        const response = await fetch('http://127.0.0.1:5000/crear', {
+
+        const response = await fetch(`http://127.0.0.1:5000/${endpoint}`, {
             method: 'POST',
             body: JSON.stringify({
-                idProveedor: idProveedor,
-                materias: idMateriaPriArray
+                idProducto: idProducto,
+                materias: materiaPrimArray,
+                tipo: tipo,
+                nombre: nombre,
+                color: color,
+                precio: precio,
+                cantidad: cantidad,
+                image: imagen
             }),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8'
             }
         }).then(response => {
             console.log("response ", response);
+            alert(response);
         }).catch(error => {
             console.log("error ", error);
         });
     }
+
 </script>
 {% endblock %}
