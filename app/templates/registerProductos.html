@@ -23,38 +23,35 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        {{ renderLabelField(form.cantidad, class="form-control") }}
-                    </div>
-                    <div class="col">
                         {{ renderLabelField(form.precio, class="form-control") }}
                     </div>
-                </div>
-                <div class="row">
                     <div class="col">
                         {{ renderLabelField(form.imagen, class="form-control") }}
                     </div>
                 </div>
+                <!-- <div class="row">
+                    <div class="col">
+                        
+                    </div>
+                </div> -->
                 <div class="row">
-                    <div class="col-11">
+                    <div class="col-6">
                         {{ renderLabelField(form.materiaPri, class="form-select") }}
+                    </div>
+                    <div class="col-5">
+                        {{ renderLabelField(form.cantidadMPri, class="form-control") }}
                     </div>
                     <div class="col-1 mt-4">
                         <button type="button" class="btn btn-success btn-sm" id="addMateriaPri"
                             onclick="addMateriaPrima()"><strong> + </strong></button>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row mt-2">
                     <div class="col">
-                        {{ renderLabelField(form.cantidadMPri, class="form-control") }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <button type="button" class="btn btn-success" onclick="registrarProducto()">Realizar
-                            compra</button>
+                        <button type="button" class="btn btn-success" onclick="registrarProducto()">Registrar producto</button>
                     </div>
                     <div class="col">
-                        <button class="btn btn-danger">Cancelar compra</button>
+                        <button class="btn btn-danger">Cancelar</button>
                     </div>
                 </div>
             </form>
@@ -92,17 +89,21 @@
         let idMateriaPri = $('#materiaPriProducto').val();
         let txtMateriaPri = $('#materiaPriProducto option:selected').text();
         let txtInfoMateriaPri = txtMateriaPri.split('-');
-
         let materiaPrimaObj = {
             'idMateriaPri': idMateriaPri,
             'descripcion': `${ txtInfoMateriaPri[0].trim()} - ${ cantidadMPri } ${ txtInfoMateriaPri[1].trim() }`,
-            'cantidad': parseFloat(cantidadMPri)
+            'cantidadMPri': parseFloat(cantidadMPri)
         }
-        if (precioMateriaPri <= 0 || !precioMateriaPri) {
+        if (cantidadMPri <= 0 || !cantidadMPri) {
             alert('Elije una cantidad de material válida!');
             return;
-        } else if (materiaPrimArray.some(e => e.idMateriaPri === materiaPrimaObj.idMateriaPri)) {
-            alert('No puedes elegir más de dos veces el mismo material!');
+        } 
+        if (materiaPrimArray.some(e => e.idMateriaPri === materiaPrimaObj.idMateriaPri)) {
+            materiaPrimArray.some(e => {
+                    e.cantidadMPri += parseFloat(cantidadMPri);
+                    e.descripcion = `${ txtInfoMateriaPri[0].trim()} - ${ e.cantidad } ${ txtInfoMateriaPri[1].trim() }`;
+            });
+            listarMaterias();    
             return;
         }
         materiaPrimArray.push(materiaPrimaObj);
@@ -110,33 +111,35 @@
     }
 
     var listarMaterias = () => {
+        console.log("listar materias.\nmateriaPrimArray ", materiaPrimArray);
         $('#materiasPriTBody').empty();
-        $('#materiasPriTBody').append(
-            materiaPrimArray.forEach(materiaPri => {
-                `<tr>
-                    <td>${materiaPri.descripcion}</td>
-                    <td>
-                        <button class='btn btn-danger rounded-circle btn-close btn-sm p-1'  id='removeMateriaPri' onclick='removeMateriaPrima(this, ${materiaPri.idMateriaPri})'></button>
-                    </td>
-            </tr>`}
-            ));
+        
+        materiaPrimArray.forEach(materiaPri => {
+            $('#materiasPriTBody').append(
+            `<tr>
+                <td>${materiaPri.descripcion}</td>
+                <td>
+                    <button class='btn btn-danger rounded-circle btn-close btn-sm p-1'  id='removeMateriaPri' onclick='removeMateriaPrima(this, ${materiaPri.idMateriaPri})'></button>
+                </td>
+            </tr>`);
+        });
+            
     }
 
     var registrarProducto = async () => {
         let idProducto = $('#idProducto').val();
-        let tipo = $('#materiaPriProducto option:selected').text();
-        let nombre = $('#materiaPriProducto option:selected').text();
-        let color = $('#materiaPriProducto option:selected').text();
-        let precio = $('#materiaPriProducto option:selected').text();
-        let cantidad = $('#cantidadStock').val();
-        let imagen = $('#materiaPriProducto option:selected').text();
-        let endpoint = (idProducto == 0) ? 'registrarProducto': 'modificarProducto';
+        let tipo = $('#tipoProducto').val();
+        let nombre = $('#nombreProducto').val();
+        let color = $('#colorProducto').val();
+        let precio = $('#precioProducto').val();
+        let imagen = $('#imagenProducto').val();
+        let endpoint = (idProducto == 0) ? 'registerProductos': 'modificarProducto';
 
         console.log(materiaPrimArray);
         if (materiaPrimArray.length === 0) {
             alert('Tienes que agregar al menos 1 material a la compra!');
             return;
-        } else if (tipo == "" || nombre == "" || color == "" || precio == "" || cantidad == "" || cantidad <= 0 || imagen == "") {
+        } else if (tipo == "" || nombre == "" || color == "" || precio == "" || imagen == "") {
             alert('Error en la información, verifica los datos del formulario!');
             return;
         }
@@ -150,7 +153,6 @@
                 nombre: nombre,
                 color: color,
                 precio: precio,
-                cantidad: cantidad,
                 image: imagen
             }),
             headers: {
@@ -158,7 +160,10 @@
             }
         }).then(response => {
             console.log("response ", response);
-            alert(response);
+            if(response.status == 200){
+                alert("Producto registrado");
+                window.location.href="consultarProductos";
+            }
         }).catch(error => {
             console.log("error ", error);
         });

@@ -55,9 +55,9 @@ class RegisterPedidoForm(FlaskForm):
 class RegisterProductoForm(FlaskForm):
     tipo=SelectField('Tipo producto', choices=[('bolso', 'Bolso'), ('cartera', 'Cartera'), ('cinto', 'Cinto')], validators=[DataRequired(message='El dato es obligatiorio')], id='tipoProducto', name='tipoProducto')
     nombre = StringField("Nombre:", validators=[DataRequired(message='El dato es obligatiorio'), validators.length(max=50)], id='nombreProducto', name='nombreProducto')
-    imagen = FileField("Imagen:", validators=[DataRequired(message='El dato es obligatiorio')])
+    imagen = FileField("Imagen:", validators=[DataRequired(message='El dato es obligatiorio')],  id='imagenProducto', name='imagenProducto')
     color=SelectField('Color', choices=[('cafe', 'Café'), ('negro', 'Negro')], validators=[DataRequired(message='El dato es obligatiorio')], id='colorProducto', name='colorProducto')
-    cantidad=IntegerField('Cantidad en stock', validators=[DataRequired(message='El dato es obligatiorio'), validators.number_range(min=1, message='El valor minimo es 1')], id='cantidadStock', name='cantidadStock')
-    cantidadMPri=IntegerField('Cantidad de materia prima x producto', validators=[DataRequired(message='El dato es obligatiorio'), validators.number_range(min=1, message='El valor minimo es 1')], id='cantidadMPri', name='cantidadMPri')
-    materiaPri=SelectField('Materia Prima', choices=[], validators=[DataRequired(message='El dato es obligatiorio')], id='materiaPriCompra', name='materiaPriProducto')
+    # cantidad=IntegerField('Cantidad en stock', validators=[DataRequired(message='El dato es obligatiorio'), validators.number_range(min=1, message='El valor minimo es 1')], id='cantidadStock', name='cantidadStock')
+    cantidadMPri=IntegerField('Cantidad de materia prima', validators=[DataRequired(message='El dato es obligatiorio'), validators.number_range(min=1, message='El valor minimo es 1')], id='cantidadMPri', name='cantidadMPri')
+    materiaPri=SelectField('Materia Prima', choices=[], validators=[DataRequired(message='El dato es obligatiorio')], id='materiaPriProducto', name='materiaPriProducto')
     precio=FloatField('Precio', validators=[DataRequired(message='El dato es obligatiorio'), validators.number_range(min=0.5, message='El valor minimo es 1')], id='precioProducto', name='precioProducto')

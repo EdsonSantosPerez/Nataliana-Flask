@@ -107,7 +107,6 @@ class Productos(db.Model):
     cantidad = db.Column(db.Integer)
     imagen = db.Column(db.String(255), nullable=False)
     status = db.Column(db.Boolean)
-    materiales = db.Column(db.String(50), nullable=False)
     materiaPrima = db.relationship('Producto_MateriaPrima',
         backref= db.backref('productoMatPri', lazy=True))
 
@@ -202,8 +201,7 @@ class Compras(db.Model):
     materias = db.relationship('Compra_MateriaPrima',
         backref= db.backref('compraMatPri', lazy=True))
 
-class MateriaPrimaPorProducto(db.Model):
-    """Compras Model"""
+""" class MateriaPrimaPorProducto(db.Model):
 
     __tablename__='materia_prima_por_producto'
     id = db.Column(db.Integer, primary_key=True)
@@ -214,5 +212,5 @@ class MateriaPrimaPorProducto(db.Model):
     producto = db.relationship('Productos',
         backref= db.backref('materias_primas_por_productos', lazy=True))
     materias = db.relationship('MateriasPrimas',
-        backref= db.backref('materias_primas_por_productos', lazy=True))
+        backref= db.backref('materias_primas_por_productos', lazy=True)) """
 
