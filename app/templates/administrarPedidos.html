@@ -83,13 +83,12 @@
     }
 
     var listarProductos = () => {
-        console.log("listar productos.\nproductosArray ", productosArray);
         $('#productosTBody').empty();
 
         productosArray.forEach(producto => {
             $('#productosTBody').append(
                 `<tr>
-                <td>${producto.nombre} - ${producto.cantidad}</td>
+                <td>${producto.nombre} - ${producto.cantidadProducto}</td>
                 <td>
                     <button class='btn btn-danger rounded-circle btn-close btn-sm p-1'  id='removeProducto' onclick='removeProducto(this, ${producto.idProducto})'></button>
                 </td>
