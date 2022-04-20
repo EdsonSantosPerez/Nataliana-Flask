@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% from '_macros.html' import renderLabelField %}
+{% block content %}
+<div class="container text-dark card">
+    <h2>Administrar Pedidos</h2>
+    <div class="row m-5">
+        <div class="col">
+            <form>
+                <div class="row">
+                    <div class="col-6">
+                        {{ renderLabelField(form.productoPedido, class="form-select") }}
+                    </div>
+                    <div class="col-5">
+                        {{ renderLabelField(form.cantidad, class="form-control") }}
+                    </div>
+                    <div class="col-1 mt-4">
+                        <button type="button" class="btn btn-success btn-sm" id="addMateriaPri"
+                            onclick="addProducto()"><strong> + </strong></button>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <button type="button" class="btn btn-success" onclick="registrarProducto()">Registrar
+                            pedido</button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-danger">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col m-0 p-0 rounded shadow" style="max-height: 250px; overflow: auto;">
+            <table class="table rounded m-0">
+                <thead class="table-dark">
+                    <th colspan="2" class="text-white rounded-top" style="position: sticky; top: 0; z-index: 1;">
+                        Productos</th>
+                </thead>
+                <tbody id="productosTBody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    var productosArray = [];
+
+    var removeProducto = (button, idProducto) => {
+        let row = button.parentElement.parentElement;
+        row.remove();
+        productosArray.some(e => {
+            if (parseInt(e.idProducto) === parseInt(idProducto)) {
+                productosArray.splice(productosArray.indexOf(e), 1);
+            }
+        });
+        listarProductos();
+    }
+
+    var addProducto = () => {
+        let cantidadProducto = $('#cantidadProducto').val();
+        let idProducto = $('#productoPedido').val();
+        let txtProducto = $('#productoPedido option:selected').text();
+        let productoObj = {
+            'idProducto': idProducto,
+            'nombre': txtProducto,
+            'cantidadProducto': parseFloat(cantidadProducto)
+        }
+        if (cantidadProducto <= 0 || !cantidadProducto) {
+            alert('Elije una cantidad de material válida!');
+            return;
+        }
+        if (productosArray.some(e => e.idProducto === productoObj.idProducto)) {
+            productosArray.some(e => {
+                e.cantidadProducto += parseFloat(cantidadProducto);
+            });
+            listarProductos();
+            return;
+        }
+        productosArray.push(productoObj);
+        listarProductos();
+    }
+
+    var listarProductos = () => {
+        console.log("listar productos.\nproductosArray ", productosArray);
+        $('#productosTBody').empty();
+
+        productosArray.forEach(producto => {
+            $('#productosTBody').append(
+                `<tr>
+                <td>${producto.nombre} - ${producto.cantidad}</td>
+                <td>
+                    <button class='btn btn-danger rounded-circle btn-close btn-sm p-1'  id='removeProducto' onclick='removeProducto(this, ${producto.idProducto})'></button>
+                </td>
+            </tr>`);
+        });
+
+    }
+
+    var registrarProducto = async () => {
+        // let idProducto = $('#idProducto').val();
+        let endpoint = (true) ? 'crearPedido' : 'modificarProducto';
+
+        console.log(productosArray);
+        if (productosArray.length === 0) {
+            alert('Tienes que agregar al menos 1 producto al pedido!');
+            return;
+        }
+
+        const response = await fetch(`http://127.0.0.1:5000/${endpoint}`, {
+            method: 'POST',
+            body: JSON.stringify({ productos: productosArray }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        }).then(response => {
+            console.log("response ", response);
+            if (response.status == 200) {
+                alert("Pedido registrado");
+                window.location.href = "/";
+            }
+        }).catch(error => {
+            console.log("error ", error);
+        });
+    }
+
+</script>
+{% endblock %}

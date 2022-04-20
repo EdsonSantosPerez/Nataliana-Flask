@@ -110,21 +110,22 @@ class Productos(db.Model):
     materiaPrima = db.relationship('Producto_MateriaPrima',
         backref= db.backref('productoMatPri', lazy=True))
 
-productos_pedidos = db.Table('productos_pedidos',
+""" productos_pedidos = db.Table('productos_pedidos',
     db.Column('id', db.Integer, primary_key=True),
     db.Column('pedidoId', db.Integer, db.ForeignKey('pedidos.id')),
-    db.Column('productoId', db.Integer, db.ForeignKey('productos.id')))
+    db.Column('productoId', db.Integer, db.ForeignKey('productos.id'))) """
 
-""" class ProductosPedido(db.Model):
+class ProductosPedido(db.Model):
 
     _tablename_ = 'productos_pedidos'
     id = db.Column(db.Integer, primary_key=True)
+    cantidad = db.Column(db.Integer, nullable=False)
     pedidoId = db.Column(db.Integer, db.ForeignKey('pedidos.id'))
     productoId = db.Column(db.Integer, db.ForeignKey('productos.id'))
     producto = db.relationship('Productos',
         backref= db.backref('pedido_producto', lazy=True))
     pedido = db.relationship('Pedidos',
-        backref= db.backref('pedido_producto', lazy=True)) """
+        backref= db.backref('pedido_producto', lazy=True))
 
 class Pedidos(db.Model):
 
@@ -133,13 +134,11 @@ class Pedidos(db.Model):
     _tablename_ = 'pedidos'
     id = db.Column(db.Integer, primary_key=True)
     codigoPedido=db.Column(db.String(50), nullable=False)
-    cantidad = db.Column(db.Integer, nullable=False)
-    fechaPedido = db.Column(db.String(50), nullable=False)
+    fechaPedido = db.Column(db.Date, nullable=False)
     status = db.Column(db.Boolean)
     # idProducto = db.Column(db.Integer, db.ForeignKey('productos.id'), nullable=False)
-    productos = db.relationship('Productos',
-        secondary=productos_pedidos,
-        backref= db.backref('pedidos', lazy='dynamic'))
+    productos = db.relationship('ProductosPedido',
+        backref= db.backref('pedidoProductos', lazy=True))
 
 ventas_productos = db.Table('ventas_productos',
     db.Column('cantidad', db.Integer, nullable=False),
