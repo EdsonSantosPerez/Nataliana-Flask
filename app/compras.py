@@ -50,7 +50,10 @@ def crearCompra():
             cantidad = materia.get('cantidad', ''),
             fechaRegistro=datetime.date.today()
         )
-        total += (float(materia.get('precioU', '')) * int(materia.get('cantidad', '')))
+        total += (float(materia.get('precioU', '')) * float(materia.get('cantidad', '')))
+        # materiaPrima= MateriasPrimas.query.get(materiasIds[i])
+        # materiaPrima.cantidad+= float(materia.get('cantidad', ''))
+        # print(materiaPrima.cantidad)
         compra_Materia.materias= MateriasPrimas.query.get(materiasIds[i])
         compra.materias.append(compra_Materia)
         db.session.commit()
@@ -58,4 +61,8 @@ def crearCompra():
     
     compra.precioTotal = total
     db.session.commit()
+    for materia in materias:
+        material = MateriasPrimas.query.get(int(materia.get('idMateriaPri', '')))
+        db.session.commit()
+        print(material.cantidad)
     return data

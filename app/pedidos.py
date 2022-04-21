@@ -26,23 +26,42 @@ def crearPedido():
     data = request.get_json(force=True)
     productos = data.get('productos', '')
     pedido = Pedidos(codigoPedido= 'uuid', fechaPedido= datetime.date.today(), status=1)
-    # Obtiene los ids de materias primas para buscar
-    existeMaterial= False
+    materias = MateriasPrimas.query.filter_by(status=1).all()
     materiasProductos = []
+    haySuficienteMaterial = False
     for producto in productos:
         productosMaterias= db.session.query(Productos, Producto_MateriaPrima).join(Producto_MateriaPrima).filter(Producto_MateriaPrima.idProducto == int(producto.get('idProducto', ''))).all()
-        print('----------- productosMaterias -----------')
-        pprint(productosMaterias)
         for productos, producto_materia_prima in productosMaterias:
-            print('----------- productos -----------')
-            pprint(productos)
+            """ print('----------- productos -----------')
+            pprint(vars(productos)) 
             print('----------- producto_materia_prima -----------')
-            pprint(producto_materia_prima)
-            # materiasProductos.append({'idMaterial': 0, 'cantidadPedidoTotal':0})
+            pprint(vars(producto_materia_prima))
+            print('----------- producto_materia_prima.cantidad + producto_materia_prima.cantidadMerma -----------')
+            print((producto_materia_prima.cantidad + producto_materia_prima.cantidadMerma)) """
+            res= next((item for item in materiasProductos if item["idMaterial"] == producto_materia_prima.idMateriaPr), False)
+            """ print('-------- res --------')
+            print(res) """
+            if res == False:
+                materiasProductos.append({'idMaterial': producto_materia_prima.idMateriaPr, 'cantidadPedidoTotal': (producto_materia_prima.cantidad + producto_materia_prima.cantidadMerma)})
+            else:
+                i= next((index for (index, d) in enumerate(materiasProductos) if d["idMaterial"] == producto_materia_prima.idMateriaPr), False)
+                # print('{} + {}'.format(materiasProductos[i]['cantidadPedidoTotal'], (producto_materia_prima.cantidad + producto_materia_prima.cantidadMerma)))
+                materiasProductos[i]['cantidadPedidoTotal'] += (producto_materia_prima.cantidad + producto_materia_prima.cantidadMerma)
+            """ print('------------------ materiasProductos Array ------------------')
+            print(materiasProductos) """
+
+    print('------------------ materiasProductos Array FINAL ------------------')
+    print(materiasProductos)
         # pedido_productos= ProductosPedido(cantidad = producto.get('cantidadProducto', ''))
         # pedido_productos.producto= Productos.query.get(int(producto.get('idProducto', '')))
-        
-        # db.session.commit()
     
+        # db.session.commit()
+    for materia in materiasProductos:
+        materiaPri= MateriasPrimas.query.get(int(materia['idMaterial']))
+        if materiaPri.cantidad >= materia['idMaterial']:
+            haySuficienteMaterial = True
+        else:
+            haySuficienteMaterial = False
     # db.session.commit()
-    return data
+    print(haySuficienteMaterial)
+    return '{}'.format(haySuficienteMaterial)
